@@ -1,0 +1,1 @@
+if(console){var cookiedomainwarning='Error: The domain WWW.NETWORKEDUCATIVE.COM is not authorized to show the cookie banner for domain group ID 776ea2b2-6803-4c2e-a520-9a6505c9ecd7. Please add it to the domain group in the Cookiebot Manager to authorize the domain.';if(typeof console.warn === 'function'){console.warn(cookiedomainwarning)}else{console.log(cookiedomainwarning)}};
