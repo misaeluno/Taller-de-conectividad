@@ -1,0 +1,695 @@
+﻿function deferLoginHome() {
+    window.jQuery
+        ? domReadyLoginHome()
+        : setTimeout(function () {
+            deferLoginHome();
+        }, 100);
+}
+
+var isEventBinded = false;
+function domReadyLoginHome() {
+    GetNotificationCounts();
+    SelectCurrentMenu();
+
+    var IsOpenSidebar = getCookie("IsOpenSidebar") ? JSON.parse(getCookie("IsOpenSidebar")) : false;
+
+    const btnCollapse = document.querySelectorAll(".btn-collapse");
+
+    if (btnCollapse.length > 0 && !isEventBinded) {
+        isEventBinded = true;
+
+        btnCollapse.forEach(button => {
+            button.addEventListener("click", function () {
+
+                IsOpenSidebar = getCookie("IsOpenSidebar") ? JSON.parse(getCookie("IsOpenSidebar")) : false;
+                const authorDashleftbar = document.getElementById('DetailContainer');
+                document.body.classList.toggle("openClose");
+                if (IsOpenSidebar) {
+                    setCookie("IsOpenSidebar", "false", 30);
+                    if (authorDashleftbar?.classList && document.body.classList.contains('openClose')) {
+                        authorDashleftbar.classList.add("handle-fullwidth");
+                    }
+
+                } else {
+                    setCookie("IsOpenSidebar", "true", 30);
+                    if (authorDashleftbar) {
+
+                        authorDashleftbar.classList.remove("handle-fullwidth");
+                    }
+                }
+
+
+
+            });
+        });
+    }
+    function SelectCurrentMenu() {
+        const hdncurrentPage = document.getElementById("hdncurrentPage");
+
+        if (hdncurrentPage) {
+            hdncurrentPage.value = null;
+        }
+
+        const currentPage = hdncurrentPage ? hdncurrentPage.value : null;
+        const menu = document.querySelectorAll(".nav-link");
+
+        if (currentPage && currentPage.trim() !== '' && currentPage !== 'recent') {
+            menu.forEach(item => {
+                if (item.href && item.href.includes(currentPage)) {
+                    item.classList.add("active-header-menu");
+                }
+            });
+        }
+    }
+
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            while (cookie.charAt(0) == ' ') {
+                cookie = cookie.substring(1, cookie.length);
+            }
+            if (cookie.indexOf(nameEQ) == 0) {
+                return cookie.substring(nameEQ.length, cookie.length);
+            }
+        }
+        return null;
+    }
+
+    const topMobileMenu = document.querySelector(".top-mobile-menu");
+    topMobileMenu?.addEventListener("click", function () {
+        document.body.classList.toggle("topMobileMenuOpen");
+    });
+
+    function contentCenter() {
+        var element = document.body;
+        if (element.classList.contains("container-full")) {
+            element.classList.remove("container-full");
+            element.classList.add("container-center");
+        } else {
+            element.classList.remove("container-center");
+            element.classList.add("container-full");
+        }
+
+    }
+
+    jQuery("#UserDetailContainer").mouseover(function () {
+        jQuery("#LogoutSpan").show();
+    }),
+        jQuery(".loginPopup.loggedIn").mouseover(function () {
+            jQuery("#LogoutSpan").show(), jQuery(".userdetailCntr").addClass("hover");
+        }),
+        jQuery("#UserDetailContainer").mouseout(function () {
+            jQuery("#LogoutSpan").hide();
+        }),
+        jQuery(".loginPopup.loggedIn").mouseout(function () {
+            jQuery("#LogoutSpan").hide(), jQuery(".userdetailCntr").removeClass("hover");
+        });
+    var e = !0;
+    jQuery(".common-notification").mouseover(function () {
+        jQuery(".get-noti-dot").hide(),
+            ResetNotificationCount(this);
+    }),
+        jQuery(".msg_container").click(function () {
+            e = !1;
+        }),
+        jQuery(document).click(function () {
+            e && (jQuery(".notificationMessageCntr .arrow").hide(), jQuery(".msg_container").hide()), (e = !0);
+        }),
+        jQuery(window).scroll(function () {
+            var e = jQuery(window).scrollTop(),
+                i = jQuery(window).width(),
+                t = jQuery(".topHeaderConainer").height() - jQuery(".HeadermenuStripBlue").height() - jQuery("#HeaderAdvertise").height();
+            e > t + jQuery(".HeadermenuStripBlue").height()
+                ? 767 > parseInt(i)
+                    ? (jQuery(".HeadermenuStripBlue").css("position", "fixed"), jQuery("#blankDiv").show())
+                    : jQuery(".csharp-notification").is(":visible")
+                        ? (jQuery(".HeadermenuStripBlue").css({ position: "fixed", top: "0px" }), jQuery("#blankDiv").show())
+                        : (jQuery(".HeadermenuStripBlue").css({ position: "fixed", top: 0 }), jQuery("#blankDiv").show())
+                : e <= t + jQuery(".HeadermenuStripBlue").height() && (jQuery(".HeadermenuStripBlue").css({ position: "fixed" }), jQuery("#blankDiv").hide());
+        }),
+        jQuery(window).resize(function () {
+            if (jQuery(".menuButton").is(":visible")) {
+                var e = jQuery(window).height();
+                jQuery(".responsiveHeader .responsiveMenu").css("height", e);
+            } else jQuery(".responsiveHeader .responsiveMenu").css("height", "auto");
+        }),
+        jQuery(".menuButton").click(function () {
+            jQuery(window).height();
+            var e = jQuery(".responsiveHeader .responsiveMenu");
+            e.hasClass("hidden") ? (e.removeClass("hidden"), jQuery("body").removeClass("openNav")) : (e.addClass("hidden"), jQuery("body").addClass("openNav"));
+        }),
+        (jQuery(".icons.comments").length > 0 || jQuery(".icons.message").length > 0 || jQuery(".icon-notification").length > 0) &&
+        setInterval(function () {
+            GetNotificationCounts();
+        }, 6e5),
+        jQuery("#HeaderSearch").length > 0 && jQuery("#HeaderSearch").bind("keydown", preventQuestionMark),
+        jQuery("#searchTextBox").length > 0 && jQuery("#searchTextBox").bind("keydown", preventQuestionMark),
+        jQuery("#TextBoxSearchText").length > 0 && jQuery("#TextBoxSearchText").bind("keydown", preventQuestionMark),
+        jQuery("#btnHeaderSearch").click(function () {
+            jQuery("#HeaderSearch").focus();
+        }),
+        setTimeout(function () {
+            "undefined" != typeof arrInFocus && animateinFocus();
+        }, 5e3),
+        //jQuery("<style>")
+        //    .attr("type", "text/css")
+        //    .html(
+        //        "        .scrollToTop{padding:10px 12px;position:fixed;bottom:8px;right:8px;display:none;background:#0086dc;z-index:999;-webkit-transition:all 0.3s;-moz-transition:all 0.3s;-o-transition:all 0.3s;transition:all 0.3s;} .scrollToTop:hover{background:#252525;}"
+        //    )
+        //    .appendTo("head"),
+        //jQuery("body").prepend(
+        //    "<span  aria-label='scroll to top' class='scrollToTop'>                            <svg width='20px' height='20px' viewBox='0 0 20 20'>                                <polygon fill='#FFFFFF' points='10,3.9 0,13.9 2.2,16.1 10,8.3 17.8,16.1 20,13.9 10,3.9 10,3.9 '/>                            </svg></span>"
+        //),
+        //jQuery(window).scroll(function () {
+        //    jQuery(this).scrollTop() > 100 ? jQuery(".scrollToTop").fadeIn() : jQuery(".scrollToTop").fadeOut();
+        //}),
+        //jQuery(".scrollToTop").click(function () {
+        //    return jQuery("html, body").animate({ scrollTop: 0 }, 800), !1;
+        //}),
+        //jQuery(".msg_container ul").bind("mousewheel", function (e) {
+        //    e.originalEvent.wheelDelta / 120 <= 0 && jQuery(this).find("li").last().offset().top <= jQuery(this).height() && (e.preventDefault(), e.stopPropagation());
+        //}),
+        -1 ===
+        ["advertiser"].indexOf(
+            window.location.href
+                .toLowerCase()
+                .replace(/^https?:\/\//, "")
+                .split("/")[1]
+        ) &&
+        setTimeout(function () {
+            jQuery("#HeaderAdvertise").length > 0 && GetHeaderAd();
+        }, 1200);
+}
+function getUserTimeZoneOffset() {
+    const userTimeZoneOffset = new Date().getTimezoneOffset();
+    return userTimeZoneOffset;
+}
+
+function calculateTimeAgo(currentdate) {
+
+    if (!(currentdate instanceof Date)) {
+        currentdate = new Date(currentdate);
+    }
+
+    const date = new Date(currentdate);
+    date.setMinutes(currentdate.getMinutes() - currentdate.getTimezoneOffset());
+    const now = new Date();
+    const timeSpan = (now - date) / 1000;
+
+    if (timeSpan < 60) {
+        return "now";
+    }
+
+    const minutes = Math.floor(timeSpan / 60);
+    if (minutes < 60) {
+        return minutes === 1 ? "1m" : minutes + "m";
+    }
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+        return hours === 1 ? "1h" : hours + "h";
+    }
+
+    const days = Math.floor(hours / 24);
+    if (days < 7) {
+        return days === 1 ? "1d" : days + "d";
+    }
+
+    const weeks = Math.floor(days / 7);
+    if (days < 30) {
+        return weeks === 1 ? "1w" : weeks + "w";
+    }
+
+    if (days < 365) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+    }
+
+    const years = Math.floor(days / 365);
+    return years === 1 ? "1y" : years + "y";
+}
+
+function ResetNotificationCount(e) {
+    var i = 0;
+    "messageNotification" == jQuery(e).attr("id") ? (i = 1) : "commentNotification" == jQuery(e).attr("id") ? (i = 2) : "generalNotifications" == jQuery(e).attr("id") && (i = 3),
+        0 != i &&
+        // i = 1; // 3 is for general notifications
+        jQuery.ajax({
+            url: "/Handlers/CsharpCommon.ashx?method=reset_notification_message_count&type=" + i,
+            type: "POST",
+            async: !1,
+            dataType: "JSON",
+            contentType: "application/JSON",
+            beforeSend: function () {
+                1 == i && jQuery("#imgComments").show(), 2 == i && jQuery("#imgMessages").show(), 3 == i && jQuery("#imgGeneralNotifications").show();
+            },
+            success: function (t) {
+                if ((jQuery(e).find(".messageCount").hide(), null != t && "" != t)) {
+                    if ("login" == t) return jQuery("#LabelNoDataNotifications").show(), !1;
+                    var o = "";
+
+                    1 == i
+
+                        ? ((o = ""),
+
+                            jQuery(t).each(function () {
+
+                                const givenDateString = this.Date;
+                                const timeAgoString = calculateTimeAgo(givenDateString);
+                                if (this.GroupImageUrl === '') {
+                                    this.GroupImageUrl = '/UploadFile/AuthorImage/DefaultAuthorImage.gif';
+                                }
+                                if (this.SupportUser === 'No' || this.SupportUser === 'Notification') {
+                                    o += "<li class='newdvMessages dropdown-item'><a href='" +
+                                        this.GroupUrl +
+                                        "' title='" +
+                                        this.GroupName +
+                                        "' class='pic newpic'> <img src='" +
+                                        this.GroupImageUrl +
+                                        "' alt='" +
+                                        this.GroupName +
+                                        "' width=\"55\" height=\"55\"/></a><div class='newright_content'> <a href='" +
+                                        this.MemberUrl +
+                                        "'>" + this.Name +
+                                        "</a><span class='newnotificationDate'>" +
+                                        timeAgoString +
+                                        "</span>" +
+                                        "<a class='groupName' href='" +
+                                        this.GroupUrl +
+                                        "'><b>" +
+                                        this.GroupName +
+                                        "</b></a>" +
+                                        "<a class='text'href='" +
+                                        this.GroupUrl +
+                                        "'>" +
+                                        this.Subject +
+                                        "</a></div></li>";
+
+                                } else {
+                                    o +=
+                                        "<li class='newdvMessages dropdown-item'><a href='" +
+                                        this.MemberUrl +
+                                        "' title='" +
+                                        this.Name +
+                                        "' class='pic'> <img src='" +
+                                        this.PhotoUrl +
+                                        "' alt='" +
+                                        this.Name +
+                                        "'  width=\"45\" height=\"45\"/></a><div class='newright_content'> <a href='" +
+                                        this.MemberUrl +
+                                        "'>" +
+                                        this.Name +
+                                        "</a><span class='newnotificationDate'>" +
+                                        timeAgoString +
+                                        "</span>" +
+                                        "<a class='text' href='" +
+                                        this.MessageURL +
+                                        "'>" +
+                                        this.Subject +
+                                        "</a></div></li>";
+                                }
+                                jQuery(".messageCount").hide();
+                                jQuery(".messageCount").html("");
+                            }),
+                            jQuery("#dvMessages").empty(),
+                            jQuery("#dvMessages").parent().find(".view-all-notification").length === 0
+                                ? jQuery("#dvMessages").parent().append("<a class='view-all-notification' href='" + jQuery("#hddSiteUrl").val() + "/notification/notification.aspx' > View All Messages</a > ")
+                                : "",
+
+
+
+                            jQuery("#dvMessages").html(o))
+
+
+                        : 2 == i
+                            ? ((o = ""),
+                                jQuery(t).each(function () {
+                                    o +=
+                                        "<li class='dropdown-item'><a href='" +
+                                        this.MemberUrl +
+                                        "' title='" +
+                                        this.Name +
+                                        "' class='pic'><img src='" +
+                                        this.PhotoUrl +
+                                        "'  alt='" +
+                                        this.Name +
+                                        "' width=\"45\" height=\"45\"  /></a><div class='right_content'><div> <a href='" +
+                                        this.ArticleUrl +
+                                        "'>" +
+                                        (this.Comment.length > 100 ? this.Comment.substring(0, 100) + "..." : this.Comment) +
+                                        "</a></div><div><span class='notificationDate'>" +
+                                        this.Date +
+                                        "</span></div></div></li>";
+                                }),
+                                jQuery("#dvComments").empty(),
+                                jQuery("#spanCommentCount").hide(),
+                                jQuery("#spanCommentCount").html(""),
+                                jQuery("#dvComments").html(o)
+                                , jQuery("#dvComments").parent().find(".view-all-notification").length === 0
+                                    ? jQuery("#dvComments").parent().append("<a class='view-all-notification' href='" + jQuery("#hddSiteUrl").val() + "/notification/' > View All Comments</a > ")
+                                    : ""
+                            )
+                            : ((o = ""),
+
+                                jQuery(t).each(function () {
+                                    o += "<li class='dropdown-item '>" + this.Message + "<div class='notificationDate'>" + this.Date + "</div></li>";
+                                }),
+                                jQuery("#dvGeneralNotifications").parent().find(".view-all-notification").length === 0
+                                    ? jQuery("#dvGeneralNotifications").parent().append("<a class='view-all-notification' href='" + jQuery("#hddSiteUrl").val() + "/notification/GeneralNotification.aspx' > View All Notifications</a > ")
+                                    : "",
+                                jQuery("#dvGeneralNotifications").empty(),
+                                jQuery("#dvGeneralNotifications").html(o));
+                }
+                else 1 == i ? console.log('no data') : 2 == i ? console.log('no data') : console.log('no data');
+
+            },
+            complete: function () {
+                var notificationsList = jQuery("#dvGeneralNotifications");
+
+                notificationsList.children().length === 0
+                    ? notificationsList.append(jQuery("<li class='dropdown-item'>You don't have any notifications yet</li>"))
+                    : null;
+                var messageList = jQuery("#dvMessages");
+                messageList.children().length === 0
+                    ? messageList.append(jQuery("<li class='dropdown-item'>You don't have any messages yet</li> <a class='view-all-notification' href='" + jQuery("#hddSiteUrl").val() + "/notification/notification.aspx' > View All Messages</a>"))
+                    : null;
+                var commentList = jQuery("#dvComments");
+                commentList.children().length === 0
+                    ? commentList.append(jQuery("<li class='dropdown-item'>You currently don't have any comments on your post.</li>"))
+                    : null;
+
+            },
+        });
+}
+function GetNotificationCounts() {
+    jQuery.ajax({
+        url: "/WebServices/CommonServices.asmx/GetNotificationCount",
+        type: "POST",
+        dataType: "JSON",
+        contentType: "application/json",
+        success: function (e) {
+            if ((jQuery(".loginControl .messageCount").html("").hide(), null != e.d)) {
+                var i = JSON.parse(e.d),
+                    t = i[0].NotificationMessageCount,
+                    o = i[0].NotificationGeneralCount,
+                    n = i[0].NotificationCommentCount;
+                0 != n && 0 != jQuery(".icons.comments").length && (jQuery("#spanCommentCount").html(n).show(), (jQuery(".icons.comments")[0].title = "You have " + (0 == n ? "no" : n) + " unread comment" + (n > 1 ? "s" : ""))),
+                    0 != t && 0 != jQuery(".icons.message").length && (jQuery("#spanMessages").html(t).show(), (jQuery(".icons.message")[0].title = "You have " + (0 == t ? "no" : t) + " unread message" + (t > 1 ? "s" : ""))),
+                    0 != o &&
+                    0 != jQuery(".icon-notification").length &&
+                    (jQuery(".get-noti-dot").show(), (jQuery(".icon-notification")[0].title = "You have " + (0 == o ? "no" : o) + " unread notification" + (o > 1 ? "s" : "")));
+            }
+        },
+        error: function (e) {
+            console.log("Error");
+        },
+    });
+}
+function logout() {
+    jQuery.ajax({
+        type: "POST",
+        url: "/WebServices/CommonServices.asmx/LogOffUser",
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function () {
+            // jQuery(".logout.loader").show();
+        },
+        dataType: "json",
+        success: function (e) {
+            !0 === e.d && (clearCookies(), (window.location = window.location.pathname));
+        },
+        complete: function () {
+            // jQuery(".logout.loader").hide();
+        },
+    });
+}
+function clearCookies() {
+    var e = new Date();
+    e.setDate(e.getDate() + 30);
+    var i = "",
+        t = "",
+        o = "";
+    document.cookie.indexOf("notificationId") > -1 && (i = document.cookie.substr(document.cookie.indexOf("notificationId")) + ";expires=" + e.toUTCString() + ";path=/"),
+        document.cookie.indexOf("GBID") > -1 && (t = document.cookie.substr(document.cookie.indexOf("GBID")) + ";expires=" + e.toUTCString() + ";path=/"),
+        document.cookie.indexOf("FilterRecent") > -1 && (o = document.cookie.substr(document.cookie.indexOf("FilterRecent")) + ";path=/"),
+        document.cookie.split(";").forEach(function (e) {
+            document.cookie = e.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        }),
+        "" !== i && (document.cookie = i),
+        "" !== t && (document.cookie = t),
+        "" !== o && (document.cookie = o);
+}
+function preventQuestionMark(e) {
+    return 191 !== (e.which ? e.which : e.keyCode);
+}
+deferLoginHome();
+
+
+function dishplayDash(el) {
+    el.classList.add("has-subNavbar");
+
+    jQuery("#ctl00_AuthorDashMainLeftMenu_DashbaordSubMenu").show();
+
+    // Add event listener to close submenu when clicking outside
+    document.addEventListener("click", function (event) {
+        var isClickInside = el.contains(event.target) || document.getElementById("ctl00_AuthorDashMainLeftMenu_DashbaordSubMenu").contains(event.target);
+        if (!isClickInside) {
+
+            el.classList.remove("hovered");
+            jQuery("#ctl00_AuthorDashMainLeftMenu_DashbaordSubMenu").hide();
+            document.removeEventListener("click", arguments.callee); // Remove the event listener 
+        }
+    });
+}
+
+function dishplayAchievementsMenu(el) {
+    el.classList.add("has-subNavbar");
+
+    jQuery("#ctl00_AchievementsMainLeftMenu_AchivementSubMenu").show();
+
+    // Add event listener to close submenu when clicking outside
+    document.addEventListener("click", function (event) {
+        var isClickInside = el.contains(event.target) || document.getElementById("ctl00_AchievementsMainLeftMenu_AchivementSubMenu").contains(event.target);
+        if (!isClickInside) {
+
+            el.classList.remove("hovered");
+            jQuery("#ctl00_AchievementsMainLeftMenu_AchivementSubMenu").hide();
+            document.removeEventListener("click", arguments.callee); // Remove the event listener
+        }
+    });
+}
+
+function dishplayDash(el) {
+    el.classList.add("has-subNavbar");
+    jQuery("body").addClass("openClose");
+    if (window.matchMedia("(max-width: 992px)").matches) {
+        jQuery("body .right-container").attr('style', 'width: calc(100% - 60px) !important; margin-left: 60px !important;');
+    } else { jQuery("body .right-container").attr('style', 'width: calc(100% - 260px) !important; margin-left: 260px !important;'); }
+
+    jQuery("#ctl00_AuthorDashMainLeftMenu_DashbaordSubMenu").show();
+    const authorDashleftbar = document.getElementById('DetailContainer');
+    if (authorDashleftbar) {
+        authorDashleftbar.classList.remove("handle-fullwidth");
+    }
+
+
+    if (window.innerWidth < 1023) {
+        jQuery(".main-left-navbar").attr("style", "margin-left:0px");
+    }
+
+
+    // Add event listener to close submenu when clicking outside
+    document.addEventListener("click", function (event) {
+        var isClickInside = el.contains(event.target) || document.getElementById("ctl00_AuthorDashMainLeftMenu_DashbaordSubMenu").contains(event.target);
+        if (!isClickInside) {
+
+            el.classList.remove("hovered");
+            jQuery("#ctl00_AuthorDashMainLeftMenu_DashbaordSubMenu").hide();
+            const authorDashleftbar = document.getElementById('DetailContainer');
+            if (authorDashleftbar && document.body.classList.contains('openClose')) {
+                authorDashleftbar.classList.add("handle-fullwidth");
+            }
+            document.removeEventListener("click", arguments.callee);
+            jQuery("body .right-container").removeAttr('style');
+            if (window.innerWidth < 1023) {
+                jQuery(".main-left-navbar").attr("style", "");
+                jQuery("body").addClass("openClose");
+                jQuery("body .right-container").removeAttr('style');
+            }
+        }
+    });
+
+}
+
+if (document.getElementById('authDash')) {
+    dishplayDash(document.getElementById('authDash'));
+}
+function ShowGrowwthMenu(el) {
+    el.classList.add("has-subNavbar");
+
+    jQuery("#ctl00_GrowthMainLeftMenu_GrowthSubMenu").show();
+
+    // Add event listener to close submenu when clicking outside
+    document.addEventListener("click", function (event) {
+        var isClickInside = el.contains(event.target) || document.getElementById("ctl00_GrowthMainLeftMenu_GrowthSubMenu").contains(event.target);
+        if (!isClickInside) {
+
+            el.classList.remove("hovered");
+            jQuery("#ctl00_GrowthMainLeftMenu_GrowthSubMenu").hide();
+            document.removeEventListener("click", arguments.callee); // Remove the event listener
+        }
+    });
+}
+
+function dishplayNetworkMenu(el) {
+    el.classList.add("has-subNavbar");
+
+    jQuery("#ctl00_NetworkMainLeftMenu_NetworkSubMenu").show();
+
+    // Add event listener to close submenu when clicking outside
+    document.addEventListener("click", function (event) {
+        var isClickInside = el.contains(event.target) || document.getElementById("ctl00_NetworkMainLeftMenu_NetworkSubMenu").contains(event.target);
+        if (!isClickInside) {
+
+            el.classList.remove("hovered");
+            jQuery("#ctl00_NetworkMainLeftMenu_NetworkSubMenu").hide();
+            document.removeEventListener("click", arguments.callee); // Remove the event listener
+        }
+    });
+}
+
+
+
+function ChangeTheme() {
+    lightmode = localStorage.getItem('lightmode');
+    lightmode !== "active" ? enableLightkmode() : disableLightmode();
+
+    var lightmode = localStorage.getItem('lightmode');
+
+    if (typeof CKEDITOR !== "undefined" && CKEDITOR.instances) {
+        for (var name in CKEDITOR.instances) {
+            var editor = CKEDITOR.instances[name];
+            var css = (lightmode === "active")
+                ? '.cke_editable { background-color: var(--bodyBg) !important; color: var(--textBtn) !important; }'
+                : '.cke_editable { background-color: #091227 !important; color: #ffffff !important; }';
+
+            // Remove old style if any
+            var head = editor.document.getHead();
+            var existing = head.find('style[data-theme]').$;
+            for (var i = 0; i < existing.length; i++) {
+                existing[i].parentNode.removeChild(existing[i]);
+            }
+
+            // Add new style
+            var styleElement = editor.document.createElement('style');
+            styleElement.setAttribute('data-theme', 'true');
+            styleElement.setHtml(css);
+            head.append(styleElement);
+        }
+    }
+}
+
+
+document.documentElement.setAttribute("data-theme", "dark");
+
+let lightmode = localStorage.getItem('lightmode');
+
+const enableLightkmode = () => {
+
+    document.documentElement.setAttribute("data-theme", "light");
+    document.body.classList.add('light-mode');
+    localStorage.setItem('lightmode', 'active');
+
+    const themeHref = "../../../App_Themes/Csharp-V3/Layout/Common/light-mode.css";
+
+    // Check if the stylesheet already exists
+    const existingLink = Array.from(document.head.querySelectorAll('link[rel="stylesheet"]'))
+        .find(link => link.getAttribute('href') === themeHref);
+
+    if (!existingLink) {
+        let addthemecssfile = document.createElement("link");
+        addthemecssfile.setAttribute("rel", "stylesheet");
+        addthemecssfile.setAttribute("type", "text/css");
+        addthemecssfile.setAttribute("href", themeHref);
+        document.head.insertBefore(addthemecssfile, document.head.firstChild);
+    }
+}
+
+const disableLightmode = () => {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.body.classList.remove('light-mode');
+    localStorage.setItem('lightmode', null);
+}
+
+if (lightmode === "active") enableLightkmode();
+
+
+
+
+
+//window.onload = function () {
+//    const currentUrl = window.location.href;
+//    let intervalId;
+//    function focusOnCommentTextArea() {
+//        if (currentUrl.includes("#comments")) {
+//            const commentTextArea = document.getElementById('InputCommentText_0');
+//            if (commentTextArea) {
+//                commentTextArea.focus();
+//                const commentsBox = document.getElementById('comments');
+//                if (commentsBox) {
+//                    const offset = commentsBox.getBoundingClientRect().top + window.scrollY - 200;
+//                    window.scrollTo({
+//                        top: offset,
+//                        behavior: 'smooth'
+//                    });
+//                }
+//                clearInterval(intervalId);
+//            }
+//        }
+//    }
+//    if (currentUrl.includes("#comments")) {
+//        intervalId = setInterval(focusOnCommentTextArea, 100);
+//    }
+//};
+
+document.addEventListener('click', function (event) {
+    if (!document.body.classList.contains('openClose')) {
+        if (!event.target.closest('.btn-collapse') && !event.target.closest('#categorySearch') && !event.target.closest('#ctl00_mainleft_userProfImg') && !event.target.closest('#ctl00_ForumMainLeft_userProfImg') && !event.target.closest('#ctl00_AuthorDashMainLeftMenu_userProfImg')) {
+
+            const collapseBtn = document.querySelector('.btn-collapse');
+            if (collapseBtn) {
+                collapseBtn.click();
+            }
+        }
+    }
+});
+
+
+function storeReturnUrlAndRedirect() {
+    var currentUrl = window.location.href;
+    var cookieName = "returnUrl";
+    var cookieValue = encodeURIComponent(currentUrl);
+    var expiryDays = 1;
+
+    var expiryDate = new Date();
+    expiryDate.setTime(expiryDate.getTime() + (expiryDays * 24 * 60 * 60 * 1000));
+
+    document.cookie = cookieName + "=" + cookieValue + ";expires=" + expiryDate.toUTCString() + ";path=/";
+
+    // Redirect
+    window.location.href = "/register";
+}
+
+
+
+

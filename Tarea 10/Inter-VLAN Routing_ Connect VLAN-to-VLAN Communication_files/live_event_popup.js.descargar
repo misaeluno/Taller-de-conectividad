@@ -1,0 +1,1 @@
+function btnClose(eventId){document.querySelector("#popupevent").style.display="none";var expireDate=new Date;expireDate.setTime(expireDate.getTime()+12*60*60*1e3);document.cookie="ClosedLiveShow="+(eventId||"")+"; path=/; expires="+expireDate.toUTCString()}

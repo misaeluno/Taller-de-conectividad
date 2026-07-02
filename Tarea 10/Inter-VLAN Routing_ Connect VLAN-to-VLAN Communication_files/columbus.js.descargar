@@ -1,0 +1,1 @@
+var FingerprintJS={load:function(){return Promise.resolve({get:function(){return Promise.resolve(null)}})}};
