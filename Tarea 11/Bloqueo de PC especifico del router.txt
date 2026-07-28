@@ -1,0 +1,7 @@
+conf t
+access-list 100 deny ip host 192.168.10.3 host 192.168.0.2
+access-list 100 permit ip any any
+int GigabitEthernet0/"el nuemro de la Vlan o el puerto de salida"
+ip access-group 100 in
+end
+write

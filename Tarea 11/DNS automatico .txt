@@ -1,0 +1,35 @@
+https://youtu.be/cpYwt23mmAk?si=xMeBG3Rd_411PzLg
+
+conf t
+int gigabitEthernet0/0
+ip address 192.168.3.1 255.255.255.0
+no shut
+exit
+ip dhcp pool DNSatutomatico
+network 192.168.0.0 255.255.0.0
+default-router 192.168.0.1
+dns-server 192.168.0.2
+exit
+ip dhcp excluded-address 192.168.0.1
+ip dhcp excluded-address 192.168.0.2
+exit
+copy running-config startup-config
+
+
+Para obtener la IP automatica y el DNS del servidor (IP Vlna 192.168.7.1 // DNS 192.168.0.2)
+Primero hay que crear las Vlan en el switch con este comando
+
+interface fa0/1
+switchport mode access
+switchport access vlan 10
+exit
+
+En el Router se coloca este comadno
+
+cond t
+ip dhcp pool vlan10
+network 192.168.7.0 255.255.255.0
+default-router 192.168.7.1
+dns-server 192.168.0.2
+exit
+ip dhcp excluded-address 192.168.7.1 192.168.7.2
