@@ -19,15 +19,15 @@ copy running-config startup-config
 Para obtener la IP automatica y el DNS del servidor (IP Vlna 192.168.7.1 // DNS 192.168.0.2)
 Primero hay que crear las Vlan en el switch con este comando
 
-interface fa0/1
+interface fa0/"puerto con aceso a la vlan"
 switchport mode access
-switchport access vlan 10
+switchport access vlan "nuemro de la vlan"
 exit
 
 En el Router se coloca este comadno
 
 cond t
-ip dhcp pool vlan10
+ip dhcp pool "nombre del protoco DHCP a crear"
 network 192.168.7.0 255.255.255.0
 default-router 192.168.7.1
 dns-server 192.168.0.2
